@@ -3,7 +3,9 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from config import BOT_TOKEN
-from handlers import start, about, whoami #random_fact, gpt_chat, talk, quiz
+from handlers.commands_handler import router as command_router
+from handlers.text_handler import router as text_router
+from handlers.voice_handler import router as voice_router
 
 
 async def main():
@@ -13,15 +15,12 @@ async def main():
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher()
 
-    dp.include_router(start.router)
-    dp.include_router(about.router)
-    dp.include_router(whoami.router)
-    #dp.include_router(random_fact.router)
-    #dp.include_router(gpt_chat.router)
-    #dp.include_router(talk.router)
-    #dp.include_router(quiz.router)
+    dp.include_router(command_router)
+    dp.include_router(text_router)
+    dp.include_router(voice_router)
 
     await dp.start_polling(bot)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
