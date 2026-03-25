@@ -13,11 +13,11 @@ router = Router()
 @router.message(Command("start"))
 async def cmd_start(message: Message, state: FSMContext):
     # await message.answer(MESSAGES["start"])
-    user = get_user_from_file('data/users.txt', message.from_user.id)
+    user = get_user_from_file('data/users.json', message.from_user.id)
     if user:
         await message.answer(f'Hello {user["name"]}')
     else:
-        await message.answer("Hello! What is your name?")
+        await message.answer("Hello! What is your name? To cancel /cancel")
         await state.set_state(RegistrationProfile.waiting_name)
     # start_text = '''
     # Список достпных команд:
@@ -29,12 +29,18 @@ async def cmd_start(message: Message, state: FSMContext):
     # await message.answer(start_text)
 
 
+@router.message(Command('cancel'))
+async def cmd_cancel(message: Message, state: FSMContext):
+    await state.clear()
+    await message.answer("Last move canceled")
+
+
 @router.message(RegistrationProfile.waiting_name)
 async def cmd_waiting_name(message: Message, state: FSMContext):
     await message.answer(f'Nice to meat you, {message.text}')
     await state.update_data(id = message.from_user.id)
     await state.update_data(name = message.text)
-    await message.answer('How old are you?')
+    await message.answer('How old are you? To cancel /cancel')
     await state.set_state(RegistrationProfile.waiting_age)
 
 
@@ -42,7 +48,7 @@ async def cmd_waiting_name(message: Message, state: FSMContext):
 async def cmd_waiting_age(message: Message, state: FSMContext):
     await message.answer(f'Wow! Nice. You are {message.text} years old')
     await state.update_data(age = message.text)
-    await message.answer('Where are you from?')
+    await message.answer('Where are you from? To cancel /cancel')
     await state.set_state(RegistrationProfile.waiting_city)
 
 
@@ -52,7 +58,7 @@ async def cmd_waiting_city(message: Message, state: FSMContext):
     await state.update_data(city = message.text)
     data = await state.get_data()
     await message.answer(f'Info about you: {data}')
-    write_to_file('data/users.txt', data)
+    write_to_file('data/users.json', data)
     await state.clear()
 
 
