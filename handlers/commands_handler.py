@@ -4,7 +4,8 @@ from aiogram.filters import Command
 from texts.messages import MESSAGES
 from aiogram.fsm.context import FSMContext
 from states.states import RegistrationProfile
-from utils.file_handler import write_to_file, get_user_from_file
+from utils.file_handler import write_to_file, get_user_from_file, write_to_file_async
+from keyboards.replay import menu_keyboard, inline_keyboard, special_keyboard
 
 
 router = Router()
@@ -12,27 +13,36 @@ router = Router()
 
 @router.message(Command("start"))
 async def cmd_start(message: Message, state: FSMContext):
-    # await message.answer(MESSAGES["start"])
     user = get_user_from_file('data/users.json', message.from_user.id)
     if user:
         await message.answer(f'Hello {user["name"]}')
     else:
         await message.answer("Hello! What is your name? To cancel /cancel")
         await state.set_state(RegistrationProfile.waiting_name)
-    # start_text = '''
-    # Список достпных команд:
-    # /start - Начать
-    # /help - Показать это сообщение
-    # /whoami - User info
-    # /about - Информация о боте
-    # '''
-    # await message.answer(start_text)
 
 
 @router.message(Command('cancel'))
 async def cmd_cancel(message: Message, state: FSMContext):
     await state.clear()
     await message.answer("Last move canceled")
+
+
+@router.message(Command("special"))
+async def cmd_special(message: Message):
+    await message.answer("share your data", reply_markup = special_keyboard())
+
+
+
+@router.message(Command("menu"))
+async def cmd_menu(message: Message):
+    await message.answer(text = "Main Menu", reply_markup = menu_keyboard())
+
+
+
+@router.message(Command("inline"))
+async def cmd_inlilne(message: Message):
+    await message.answer(text = "Inline Menu", reply_markup = inline_keyboard())
+
 
 
 @router.message(RegistrationProfile.waiting_name)

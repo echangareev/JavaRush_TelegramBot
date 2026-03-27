@@ -19,3 +19,8 @@ async def cmd_text(message: Message):
 @router.message(F.text.lower().contains('помощь'))
 async def handle_help_word(message: Message):
     await message.answer()
+
+
+@router.message(F.text == "🌤 Weather")
+async def cmd_text_weather(message: Message):
+    await message.answer("It's snow outside")

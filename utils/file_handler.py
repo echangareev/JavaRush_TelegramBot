@@ -2,20 +2,20 @@ import aiofiles
 import json
 import os
 
-# def write_to_file(filename, data):
-#     try:
-#         data_file = get_data_from_file(filename)
-#         list = []
-#         if data_file:
-#             list.append(data_file)
-#
-#         with open(filename, 'w') as file:
-#             list.append(data)
-#             json.dump(list, file)
-#             # file.write(str(data) + '\n')
-#             print("Data written to file successfully")
-#     except Exception as e:
-#         print(e)
+def write_to_file(filename, data):
+    try:
+        data_file = get_data_from_file(filename)
+        lst = []
+        if data_file:
+            lst.append(data_file)
+
+        with open(filename, 'w') as file:
+            lst.append(data)
+            json.dump(lst, file)
+            # file.write(str(data) + '\n')
+            print("Data written to file successfully")
+    except Exception as e:
+        print(e)
 
 
 
